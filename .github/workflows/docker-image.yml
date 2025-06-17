@@ -16,3 +16,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build the Docker image
       run: docker build . --file docker_build/Dockerfile --tag php-moodle:8.4-fpm-moodle
+    - name: push the Docker image
+      run: docker push ghcr.io/tsmu-hub/moodle-docker-php:latest

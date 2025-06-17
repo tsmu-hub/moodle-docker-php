@@ -12,7 +12,7 @@ export CR_PAT=ghp_a
 
 echo $CR_PAT | docker login ghcr.io -u vkovalok --password-stdin
 
-docker push ghcr.io/tsmu-hub/IMAGE_NAME:latest
+docker push ghcr.io/tsmu-hub/moodle-docker-php:latest
 
 
 docker tag e79d05541db8 ghcr.io/tsmu-hub/php-moodle:latest
