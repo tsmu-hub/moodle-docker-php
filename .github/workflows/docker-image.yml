@@ -19,4 +19,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file docker_build/Dockerfile --tag moodle-docker-php:8.4-fpm
     - name: push the Docker image
-      run: docker push ghcr.io/tsmu-hub/moodle-docker-php:latest
+      run: docker push ghcr.io/tsmu-hub/moodle-docker-php:8.4-fpm
