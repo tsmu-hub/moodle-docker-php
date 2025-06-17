@@ -16,4 +16,4 @@ docker push ghcr.io/tsmu-hub/IMAGE_NAME:latest
 
 
 docker tag e79d05541db8 ghcr.io/tsmu-hub/php-moodle:latest
-LABEL org.opencontainers.image.source https://github.com/tsmu-hub/moodle-docker-php
+# LABEL org.opencontainers.image.source https://github.com/tsmu-hub/moodle-docker-php

@@ -17,4 +17,4 @@ RUN docker-php-ext-install pdo_mysql mbstring zip intl xsl bcmath soap ftp gd so
 # CMD ["/usr/local/bin/init-magento.sh"]
 # RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/99-custom.ini
 
-LABEL org.opencontainers.image.source=https://github.com/tsmu-hub/moodle-docker-php
+# LABEL org.opencontainers.image.source=https://github.com/tsmu-hub/moodle-docker-php
