@@ -1,0 +1,45 @@
+# Stage 1: Build Magento with secrets
+FROM php:8.4-fpm AS prebuild-fpm
+
+
+# Install PHP extensions
+RUN apt-get update && apt-get install -y \
+    git unzip  curl libzip-dev libpng-dev libxml2-dev libonig-dev libxslt-dev libicu-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip intl xsl bcmath soap ftp gd sockets 
+# Enable ARGs
+ARG MAGENTO_PUBLIC_KEY
+ARG MAGENTO_PRIVATE_KEY
+
+
+#Set workdir
+WORKDIR /var/www/html
+# Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Inject Magento credentials into Composer auth.json
+RUN composer config --global http-basic.repo.magento.com $MAGENTO_PUBLIC_KEY $MAGENTO_PRIVATE_KEY
+
+# Copy your Magento Git repo (without vendor)
+COPY ./app .
+
+RUN composer install
+
+# Stage 2: Final clean image
+FROM php:8.4-fpm
+# Workdir for image
+WORKDIR /var/www/html
+
+RUN apt-get update && apt-get install -y \
+    git unzip curl libzip-dev libpng-dev libxml2-dev libonig-dev libxslt-dev libicu-dev libfreetype6-dev \
+    zlib1g-dev libjpeg-dev 
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg 
+RUN docker-php-ext-install pdo_mysql mbstring zip intl xsl bcmath soap ftp gd sockets
+
+# Copy files from first image
+COPY --from=prebuild-fpm /var/www/html /opt/html
+
+# script to deploy files to volume
+COPY init-magento.sh /usr/local/bin/init-magento.sh
+RUN chmod +x /usr/local/bin/init-magento.sh
+CMD ["/usr/local/bin/init-magento.sh"]
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/99-custom.ini
