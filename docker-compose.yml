@@ -1,0 +1,38 @@
+services:
+  app:
+    container_name: moodle-php-fpm
+    build:
+      context: .
+      dockerfile: ./docker_build/Dockerfile
+    image: moodle-docker-php
+    volumes:
+      - /var/www/html:/var/www/html
+      - /var/moodledata:/var/moodledata
+      - ./moodle-php-fpm/php.ini:/usr/local/etc/php/php.ini   
+#    restart: unless-stopped    
+  web:
+    container_name: moodle-nginx
+    image: nginx:latest   
+    volumes:
+      - /var/www/html:/var/www/html
+      - /var/moodledata:/var/moodledata
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+#      - ./nginx/moodle.conf:/etc/nginx/conf.d/moodle.conf:ro
+      - ./nginx/moodle.conf:/etc/nginx/templates/moodle.conf.template
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    environment:
+    - DOMAIN=${DOMAIN}
+
+
+  db:
+    image: mariadb:lts
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - ./database:/var/lib/mysql:Z
+
+ 
