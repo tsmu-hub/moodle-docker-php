@@ -9,7 +9,7 @@ services:
       - /var/www/html:/var/www/html
       - /var/moodledata:/var/moodledata
       - ./moodle-php-fpm/php.ini:/usr/local/etc/php/php.ini   
-#    restart: unless-stopped    
+    restart: unless-stopped    
   web:
     container_name: moodle-nginx
     image: nginx:latest   
@@ -20,9 +20,10 @@ services:
 #      - ./nginx/moodle.conf:/etc/nginx/conf.d/moodle.conf:ro
       - ./nginx/moodle.conf:/etc/nginx/templates/moodle.conf.template
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - app
+      - db
     environment:
     - DOMAIN=${DOMAIN}
 
